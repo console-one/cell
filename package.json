@@ -1,0 +1,56 @@
+{
+  "name": "@console-one/cell",
+  "version": "0.1.0",
+  "description": "Versioned cells that compose a patchkit DataType (the 'what kind of thing'), an event-sourced source engine (the 'where the bytes live'), and namespace addressing (the 'how do I find it again'). Wire any patchkit type to durable hot/cold storage and expose it via Path(STAGE|VERSION) + Monitor timelines.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/console-one/cell.git"
+  },
+  "bugs": {
+    "url": "https://github.com/console-one/cell/issues"
+  },
+  "homepage": "https://github.com/console-one/cell#readme",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "smoke": "node dist/smoke.js",
+    "test": "npm run smoke",
+    "prepublishOnly": "npm run clean && npm run build && npm run smoke"
+  },
+  "keywords": [
+    "cell",
+    "versioned-state",
+    "event-sourcing",
+    "patch",
+    "datatype",
+    "ledger",
+    "namespace",
+    "path-addressing",
+    "checkpoint"
+  ],
+  "author": "Andrew Chalmers",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^20.19.39",
+    "typescript": "^5.9.3"
+  },
+  "dependencies": {
+    "@console-one/namespace": "file:../namespace",
+    "@console-one/patchkit": "file:../patchkit",
+    "@console-one/source": "file:../source"
+  }
+}
