@@ -1,6 +1,6 @@
 {
   "name": "@console-one/cell",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Versioned cells that compose a patchkit DataType (the 'what kind of thing'), an event-sourced source engine (the 'where the bytes live'), and namespace addressing (the 'how do I find it again'). Wire any patchkit type to durable hot/cold storage and expose it via Path(STAGE|VERSION) + Monitor timelines.",
   "repository": {
     "type": "git",
