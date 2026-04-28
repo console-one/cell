@@ -2,10 +2,8 @@ import type { DataType } from '@console-one/patchkit'
 import { Ledger, ledger, type Sink, type LedgerEntry } from '@console-one/patchkit'
 import type { Monitor } from '@console-one/namespace'
 import { Path, Table, TimelineKey } from '@console-one/namespace'
-import type { ContentCodec, Checkpoint } from '@console-one/source'
+import type { Checkpoint } from '@console-one/source'
 import { Dao, SourceID } from '@console-one/source'
-
-import { codecFor, type CodecOptions } from './codec.js'
 
 export interface CellOptions<S, P, T = S> {
   /** The address of the cell. The Cell uses `path.namespace` as the key and
@@ -51,7 +49,6 @@ export class Cell<S, P, T = S> {
   readonly path: Path
   readonly type: DataType<S, P, unknown, T>
   readonly ledger: Ledger<S, P, T>
-  readonly codec: ContentCodec<S, P>
 
   private readonly view: Dao.Code.View.Checkpoint<S, P>
   private readonly monitor: Monitor
@@ -63,14 +60,13 @@ export class Cell<S, P, T = S> {
   private saveChain: Promise<void> = Promise.resolve()
   private _opened = false
 
-  private constructor(opts: CellOptions<S, P, T>, codec: ContentCodec<S, P>, ledgerInstance: Ledger<S, P, T>) {
+  private constructor(opts: CellOptions<S, P, T>, ledgerInstance: Ledger<S, P, T>) {
     this.path = opts.path
     this.type = opts.type
     this.view = opts.view
     this.monitor = opts.monitor
     this.metricName = opts.metricName
     this.workspace = opts.workspace
-    this.codec = codec
     this.cellKey = opts.path.namespace
     this.ledger = ledgerInstance
 
@@ -90,11 +86,8 @@ export class Cell<S, P, T = S> {
    * it if nothing is there yet). Must be awaited before mutating.
    */
   static async open<S, P, T = S>(
-    opts: CellOptions<S, P, T>,
-    codecOptions: CodecOptions<S, P> = {}
+    opts: CellOptions<S, P, T>
   ): Promise<Cell<S, P, T>> {
-    const codec = codecFor<S, P>(opts.type, codecOptions)
-
     // Try to resolve the cell's current timeline entry.
     const partition = Table.from(opts.workspace, opts.path.namespace)
     const existing = await opts.monitor.state(opts.metricName, partition).catch(() => undefined)
@@ -118,7 +111,7 @@ export class Cell<S, P, T = S> {
     }
 
     const ledgerInstance = ledger<S, P, T>(initial, { type: opts.type })
-    const cell = new Cell<S, P, T>(opts, codec, ledgerInstance)
+    const cell = new Cell<S, P, T>(opts, ledgerInstance)
 
     if (seedPatches !== undefined) {
       // Synchronous bootstrap: version = now(), no prior. Waits for durability

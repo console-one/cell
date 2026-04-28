@@ -25,11 +25,11 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "clean": "rm -rf dist",
     "smoke": "node dist/smoke.js",
-    "test": "npm run smoke",
-    "prepublishOnly": "npm run clean && npm run build && npm run smoke"
+    "test": "node dist/test-runner.js",
+    "prepublishOnly": "npm run clean && npm run build && npm run test"
   },
   "keywords": [
     "cell",
@@ -49,6 +49,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@console-one/assessable": "file:../assessable",
     "@console-one/namespace": "file:../namespace",
     "@console-one/patchkit": "file:../patchkit",
     "@console-one/source": "file:../source"
